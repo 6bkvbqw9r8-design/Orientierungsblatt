@@ -1,0 +1,7 @@
+{
+  "name": "LUMAR Safety Locator",
+  "description": "Worker safety orientation tool providing immediate location context, rescue chain details, and emergency contacts based on LUMAR brand guidelines.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
