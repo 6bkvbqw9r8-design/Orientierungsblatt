@@ -29,7 +29,6 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
   const accuracyColor = isAccurate ? 'text-green-600' : accuracy > 100 ? 'text-red-600' : 'text-yellow-600';
 
   // Extract address line from context description if possible, or use generic
-  // Simple heuristic: First line is often address if we prompted well.
   const displayedAddress = context?.address && context.address !== "Standort verifiziert" 
     ? context.address 
     : context?.description.split('\n')[0] || "Standort verifiziert";
@@ -66,29 +65,26 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
           <div className="bg-red-50 border-l-4 border-red-600 shadow-md rounded-r-lg p-4 relative overflow-hidden">
             <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between relative z-10">
                 
-                {/* Left: Location Info */}
+                {/* Left: Location Info - ONLY COORDINATES */}
                 <div className="space-y-2 flex-1 w-full">
                      <div className="flex items-center gap-2 text-red-700 font-bold font-sans uppercase tracking-wide text-[10px] mb-1">
                         <Activity size={14} className="animate-pulse" />
                         {t.emergencySectionTitle}
                      </div>
                      
-                     <div className="bg-white/60 p-3 rounded border border-red-100 backdrop-blur-sm">
-                        <p className="text-[10px] text-red-500 font-bold uppercase tracking-wider mb-1">
-                            {language === 'de' ? 'IHR AKTUELLER STANDORT / YOUR LOCATION' : 'YOUR CURRENT LOCATION'}
+                     <div className="bg-white/60 p-4 rounded border border-red-100 backdrop-blur-sm">
+                        <p className="text-[10px] text-red-500 font-bold uppercase tracking-wider mb-2">
+                            {language === 'de' ? 'IHRE GPS KOORDINATEN' : 'YOUR GPS COORDINATES'}
                         </p>
-                        <p className="font-serif text-2xl text-gray-900 leading-tight mb-2">
-                            {displayedAddress}
-                        </p>
-                        <div className="flex flex-wrap gap-3 items-center font-mono text-xs text-gray-600 bg-red-50/50 p-1.5 rounded">
-                            <span className="flex items-center gap-1">
-                                <span className="text-red-400">LAT:</span> {location.lat.toFixed(6)}
-                            </span>
-                            <span className="w-px h-3 bg-red-200"></span>
-                            <span className="flex items-center gap-1">
-                                <span className="text-red-400">LNG:</span> {location.lng.toFixed(6)}
-                            </span>
+                        
+                        {/* Coordinates as Main Hero */}
+                        <div className="font-serif text-3xl sm:text-4xl text-lumar-dark leading-none tracking-tight mb-1">
+                             {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
                         </div>
+                        
+                        <p className="text-[10px] text-gray-500 font-mono mt-1 opacity-70">
+                            Lat, Lng
+                        </p>
                      </div>
                 </div>
 
@@ -188,6 +184,12 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
                     {t.locationDetailsTitle}
                 </h4>
                 <div className="prose prose-sm prose-slate max-w-none">
+                     {/* Address Display here since removed from Emergency Box */}
+                     {displayedAddress && displayedAddress !== "Standort verifiziert" && (
+                        <p className="font-bold text-lumar-dark mb-2 border-b border-gray-100 pb-2">
+                            {displayedAddress}
+                        </p>
+                    )}
                     <p className="font-serif text-gray-700 leading-relaxed text-lg">
                         {context?.description.split('\n').filter(l => !l.toLowerCase().includes('krankenhaus') && !l.toLowerCase().includes('hospital')).join(' ') || "Keine Beschreibung verfügbar."}
                     </p>

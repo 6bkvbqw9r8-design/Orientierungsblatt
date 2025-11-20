@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
 import { GeoLocation, LocationContext, Language } from '../types';
 import { X, Share2, Check } from 'lucide-react';
 import { translations } from '../utils/translations';
@@ -28,8 +28,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ location, context, onC
         subject: "Emergency Location and Rescue Chain",
         author: "LUMAR Personal Service",
         keywords: "safety, emergency, 112, 144",
-        creator: "LUMAR App",
-        lang: language
+        creator: "LUMAR App"
     });
     
     const pageWidth = doc.internal.pageSize.getWidth();

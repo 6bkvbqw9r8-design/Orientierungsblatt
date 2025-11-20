@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
 import { GeoLocation, LocationContext } from '../types';
 import { X, Download, Send, Check } from 'lucide-react';
 
@@ -23,8 +23,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({ location, context, o
         subject: "Emergency Location and Information",
         author: "LUMAR Personal Service",
         keywords: "safety, emergency, location, lumar, pdf",
-        creator: "LUMAR Safety App",
-        lang: 'de'
+        creator: "LUMAR Safety App"
     });
     
     // Header

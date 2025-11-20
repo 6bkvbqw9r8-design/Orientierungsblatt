@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage, Language } from '../types';
 import { createFirstAidChat } from '../services/geminiService';
 import { Send, X, Activity, User, Bot, Camera, Image as ImageIcon } from 'lucide-react';
-import { GenerateContentResponse, Chat, Part } from '@google/genai';
+import { GenerateContentResponse, Chat } from '@google/genai';
 
 interface FirstAidChatProps {
   language: Language;
@@ -76,7 +76,8 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
         const base64Data = currentImage.split(',')[1];
         const mimeType = currentImage.split(';')[0].split(':')[1];
 
-        const parts: Part[] = [
+        // Implicitly structured part, removing explicit 'Part[]' type
+        const parts = [
             { inlineData: { data: base64Data, mimeType: mimeType } },
             { text: currentInput || "Analysiere dieses Bild für Erste Hilfe Maßnahmen." }
         ];
