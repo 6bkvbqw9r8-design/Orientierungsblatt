@@ -18,16 +18,19 @@ export const getLocationContext = async (coords: GeoLocation, lang: Language = '
     const targetLanguage = PROMPT_LANGUAGES[lang];
     
     // Revised prompt to force strict line-by-line formatting for easier parsing
+    // Added specific instruction to use the tool output
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Ich befinde mich an den Koordinaten: ${coords.lat}, ${coords.lng}.
       
-      Nutze das Google Maps Tool um die genaue Adresse zu finden.
+      Nutze das Google Maps Tool, um die exakte Adresse für diese Koordinaten zu finden.
       
-      Antworte in folgendem strikten Format (kein Markdown, nur Text):
-      Zeile 1: Die exakte Adresse (Straße, Hausnummer, PLZ Stadt). Wenn unbekannt, schreibe "Unbekannte Adresse".
-      Zeile 2: Das nächstgelegene KRANKENHAUS (Name und ungefähre Entfernung).
-      Zeile 3: Eine kurze, sicherheitsrelevante Beschreibung der Umgebung (z.B. Waldgebiet, Industriezone).
+      Antworte strikt in folgendem Format (kein Markdown, keine Einleitung):
+      Zeile 1: [Exakte Adresse aus Google Maps] (Straße, Hausnummer, PLZ Stadt)
+      Zeile 2: [Name des nächstgelegenen Krankenhauses] (Name und Distanz)
+      Zeile 3: [Kurze Beschreibung der Umgebung] (z.B. Waldgebiet, Industriezone, Autobahn)
+      
+      Wenn keine exakte Adresse gefunden wird, schreibe in Zeile 1: "Unbekannte Straße (${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)})".
       
       Antworte in ${targetLanguage}.`,
       config: {
@@ -48,15 +51,16 @@ export const getLocationContext = async (coords: GeoLocation, lang: Language = '
     // Parse the response based on the requested line format
     const lines = text.split('\n').filter(line => line.trim() !== '');
     
-    let verifiedAddress = lines[0] || "Standort verifiziert";
-    let medicalInfo = lines[1] || undefined;
-    let description = lines.slice(2).join('\n') || text;
+    let verifiedAddress = lines[0] || "";
+    let medicalInfo = lines[1] || "";
+    let description = lines.slice(2).join('\n') || "";
 
     // Clean up potential prefixes if the model ignores instruction (fallback)
     verifiedAddress = verifiedAddress.replace(/^(Zeile 1:|Line 1:|Adresse:|Address:)/i, '').trim();
-    if (medicalInfo) {
-      medicalInfo = medicalInfo.replace(/^(Zeile 2:|Line 2:|Krankenhaus:|Hospital:)/i, '').trim();
-    }
+    if (verifiedAddress.length < 5) verifiedAddress = `GPS: ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
+
+    medicalInfo = medicalInfo.replace(/^(Zeile 2:|Line 2:|Krankenhaus:|Hospital:)/i, '').trim();
+    description = description.replace(/^(Zeile 3:|Line 3:|Beschreibung:|Description:)/i, '').trim();
     
     // Extract Grounding Chunks for Map URL if available
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
@@ -80,8 +84,8 @@ export const getLocationContext = async (coords: GeoLocation, lang: Language = '
     console.error("Gemini API Error:", error);
     // Return a fallback context instead of throwing to keep the app usable
     return {
-      address: "Adresse nicht verfügbar",
-      description: `GPS: ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`,
+      address: `GPS: ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`,
+      description: "Standortdaten konnten nicht vollständig geladen werden.",
       medicalFacility: undefined,
       mapUrl: undefined
     };
@@ -110,6 +114,6 @@ export const createFirstAidChat = (lang: Language = 'de'): Chat => {
     });
   } catch (error) {
     console.error("Failed to create chat session:", error);
-    throw error;
+    throw error; // Re-throw to be caught by the component
   }
 };

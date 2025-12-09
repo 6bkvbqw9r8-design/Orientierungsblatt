@@ -24,18 +24,22 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    try {
-      chatSessionRef.current = createFirstAidChat(language);
-      setHasError(false);
-    } catch (error) {
-      console.error("Chat init failed", error);
-      setHasError(true);
-      setMessages(prev => [...prev, { 
-        id: 'err-init', 
-        role: 'model', 
-        text: "Verbindung zum AI-Service nicht möglich. Bitte wähle 112 für Notfälle." 
-      }]);
-    }
+    // Wrap initialization in try-catch to prevent app crash
+    const initChat = () => {
+        try {
+            chatSessionRef.current = createFirstAidChat(language);
+            setHasError(false);
+        } catch (error) {
+            console.error("Chat init failed", error);
+            setHasError(true);
+            setMessages(prev => [...prev, { 
+                id: 'err-init', 
+                role: 'model', 
+                text: "Verbindung zum AI-Service nicht möglich. Bitte wähle 112 für Notfälle." 
+            }]);
+        }
+    };
+    initChat();
     scrollToBottom();
   }, [language]);
 
@@ -61,7 +65,13 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
 
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if ((!input.trim() && !selectedImage) || !chatSessionRef.current || hasError) return;
+    if ((!input.trim() && !selectedImage) || hasError) return;
+
+    // Safety check for chat session
+    if (!chatSessionRef.current) {
+        setHasError(true);
+        return;
+    }
 
     const currentInput = input;
     const currentImage = selectedImage;
