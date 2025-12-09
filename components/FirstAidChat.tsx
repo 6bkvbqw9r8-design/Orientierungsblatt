@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage, Language } from '../types';
 import { createFirstAidChat } from '../services/geminiService';
-import { Send, X, Activity, User, Bot, Camera, Image as ImageIcon } from 'lucide-react';
+import { Send, X, Activity, User, Bot, Camera, Image as ImageIcon, AlertTriangle } from 'lucide-react';
 import { GenerateContentResponse, Chat } from '@google/genai';
 
 interface FirstAidChatProps {
@@ -16,6 +16,7 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   const chatSessionRef = useRef<Chat | null>(null);
@@ -23,7 +24,18 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    chatSessionRef.current = createFirstAidChat(language);
+    try {
+      chatSessionRef.current = createFirstAidChat(language);
+      setHasError(false);
+    } catch (error) {
+      console.error("Chat init failed", error);
+      setHasError(true);
+      setMessages(prev => [...prev, { 
+        id: 'err-init', 
+        role: 'model', 
+        text: "Verbindung zum AI-Service nicht möglich. Bitte wähle 112 für Notfälle." 
+      }]);
+    }
     scrollToBottom();
   }, [language]);
 
@@ -49,7 +61,7 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
 
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if ((!input.trim() && !selectedImage) || !chatSessionRef.current) return;
+    if ((!input.trim() && !selectedImage) || !chatSessionRef.current || hasError) return;
 
     const currentInput = input;
     const currentImage = selectedImage;
@@ -76,13 +88,12 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
         const base64Data = currentImage.split(',')[1];
         const mimeType = currentImage.split(';')[0].split(':')[1];
 
-        // Implicitly structured part, removing explicit 'Part[]' type
         const parts = [
             { inlineData: { data: base64Data, mimeType: mimeType } },
             { text: currentInput || "Analysiere dieses Bild für Erste Hilfe Maßnahmen." }
         ];
         
-        response = await chatSessionRef.current.sendMessage({ message: { parts: parts } }); // sendMessage accepts message config object
+        response = await chatSessionRef.current.sendMessage({ message: { parts: parts } });
       } else {
         response = await chatSessionRef.current.sendMessage({ message: currentInput });
       }
@@ -178,50 +189,56 @@ export const FirstAidChat: React.FC<FirstAidChatProps> = ({ language, onClose })
             </div>
         )}
 
-        {/* Input Area - RE-STYLED FOR DARK MODE */}
-        <form onSubmit={handleSend} className="p-3 bg-lumar-dark border-t border-gray-700 flex gap-2 shrink-0 items-end">
-          <input 
-            type="file" 
-            accept="image/*" 
-            className="hidden" 
-            ref={fileInputRef} 
-            onChange={handleImageSelect}
-          />
-          <button 
-            type="button" 
-            onClick={() => fileInputRef.current?.click()}
-            className="p-3 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition mb-0.5"
-            title="Foto aufnehmen/hochladen"
-          >
-            <Camera size={22} />
-          </button>
-          
-          <div className="flex-1 relative">
-              <textarea 
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend();
-                    }
-                }}
-                placeholder="Beschreibe die Situation..." 
-                className="w-full bg-lumar-dark text-white border border-gray-600 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 font-sans text-base resize-none max-h-32 placeholder-gray-500"
-                rows={1}
-                style={{ minHeight: '48px' }}
+        {/* Input Area */}
+        {hasError ? (
+           <div className="p-4 bg-red-50 border-t border-red-200 text-red-700 flex items-center gap-2 text-sm">
+              <AlertTriangle size={16} />
+              AI Service momentan nicht verfügbar.
+           </div>
+        ) : (
+            <form onSubmit={handleSend} className="p-3 bg-lumar-dark border-t border-gray-700 flex gap-2 shrink-0 items-end">
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                ref={fileInputRef} 
+                onChange={handleImageSelect}
               />
-          </div>
-          
-          <button 
-            type="submit" 
-            disabled={(!input.trim() && !selectedImage) || isLoading}
-            className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md mb-0.5"
-          >
-            <Send size={20} />
-          </button>
-        </form>
-
+              <button 
+                type="button" 
+                onClick={() => fileInputRef.current?.click()}
+                className="p-3 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition mb-0.5"
+                title="Foto aufnehmen/hochladen"
+              >
+                <Camera size={22} />
+              </button>
+              
+              <div className="flex-1 relative">
+                  <textarea 
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend();
+                        }
+                    }}
+                    placeholder="Beschreibe die Situation..." 
+                    className="w-full bg-lumar-dark text-white border border-gray-600 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 font-sans text-base resize-none max-h-32 placeholder-gray-500"
+                    rows={1}
+                    style={{ minHeight: '48px' }}
+                  />
+              </div>
+              
+              <button 
+                type="submit" 
+                disabled={(!input.trim() && !selectedImage) || isLoading}
+                className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md mb-0.5"
+              >
+                <Send size={20} />
+              </button>
+            </form>
+        )}
       </div>
     </div>
   );

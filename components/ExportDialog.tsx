@@ -65,7 +65,10 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({ location, context, o
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     
-    const splitDescription = doc.splitTextToSize(context?.description || "Keine Beschreibung", 170);
+    const addr = context?.address || "Adresse verifiziert";
+    const desc = context?.description || "Keine Beschreibung";
+    
+    const splitDescription = doc.splitTextToSize(`${addr}\n\n${desc}`, 170);
     doc.text(splitDescription, 20, 110);
 
     const descHeight = splitDescription.length * 5;
@@ -97,8 +100,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({ location, context, o
     generatePDF();
     
     // Fallback to SMS protocol for mobile integration
-    // We can't attach PDF via SMS protocol, but we can send the text/link
-    const smsBody = `LUMAR Safety Info. GPS: ${location.lat}, ${location.lng}. Map: https://maps.google.com/?q=${location.lat},${location.lng}`;
+    const smsBody = `LUMAR Safety Info. GPS: ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}. Map: https://maps.google.com/?q=${location.lat},${location.lng}`;
     // window.location.href = `sms:${phoneNumber}?&body=${encodeURIComponent(smsBody)}`;
     
     setStatus('sent');

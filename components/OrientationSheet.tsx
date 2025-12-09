@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { GeoLocation, LocationContext, Language } from '../types';
 import { RescueChain } from './RescueChain';
-import { Phone, Navigation, MessageCircle, Share2, Activity, Heart, Info } from 'lucide-react';
+import { Phone, Navigation, MessageCircle, Share2, Activity, Heart, Info, MapPin } from 'lucide-react';
 import { Logo } from './Logo';
 import { translations } from '../utils/translations';
 import { FirstAidChat } from './FirstAidChat';
@@ -28,10 +28,8 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
   const isAccurate = accuracy < 20; // Stricter accuracy check
   const accuracyColor = isAccurate ? 'text-green-600' : accuracy > 100 ? 'text-red-600' : 'text-yellow-600';
 
-  // Extract address line from context description if possible, or use generic
-  const displayedAddress = context?.address && context.address !== "Standort verifiziert" 
-    ? context.address 
-    : context?.description.split('\n')[0] || "Standort verifiziert";
+  // Use the explicitly parsed address from the service
+  const displayedAddress = context?.address || "Standort wird verifiziert...";
 
   return (
     <div className="min-h-screen bg-lumar-grey py-4 px-4 sm:px-6 lg:px-8 animate-fadeIn relative">
@@ -77,7 +75,7 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
                             {language === 'de' ? 'IHRE GPS KOORDINATEN' : 'YOUR GPS COORDINATES'}
                         </p>
                         
-                        {/* Coordinates as Main Hero */}
+                        {/* Coordinates as Main Hero - STRICT FORMAT xx.xxxxxx */}
                         <div className="font-serif text-3xl sm:text-4xl text-lumar-dark leading-none tracking-tight mb-1">
                              {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
                         </div>
@@ -184,14 +182,24 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
                     {t.locationDetailsTitle}
                 </h4>
                 <div className="prose prose-sm prose-slate max-w-none">
-                     {/* Address Display here since removed from Emergency Box */}
-                     {displayedAddress && displayedAddress !== "Standort verifiziert" && (
-                        <p className="font-bold text-lumar-dark mb-2 border-b border-gray-100 pb-2">
-                            {displayedAddress}
-                        </p>
+                     {/* Verified Address */}
+                     {displayedAddress && (
+                        <div className="flex items-start gap-2 mb-3 bg-gray-50 p-3 rounded">
+                           <MapPin size={16} className="text-lumar-dark shrink-0 mt-1" />
+                           <div>
+                               <p className="font-bold text-lumar-dark text-lg leading-tight">
+                                   {displayedAddress}
+                               </p>
+                               <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">
+                                   {language === 'de' ? 'Offizielle Adresse (Google Maps)' : 'Official Address'}
+                               </p>
+                           </div>
+                        </div>
                     )}
-                    <p className="font-serif text-gray-700 leading-relaxed text-lg">
-                        {context?.description.split('\n').filter(l => !l.toLowerCase().includes('krankenhaus') && !l.toLowerCase().includes('hospital')).join(' ') || "Keine Beschreibung verfügbar."}
+                    
+                    {/* Description Text */}
+                    <p className="font-serif text-gray-700 leading-relaxed text-lg pl-1">
+                        {context?.description || "Keine Beschreibung verfügbar."}
                     </p>
                 </div>
               </div>

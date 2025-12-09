@@ -105,7 +105,10 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ location, context, onC
     doc.setFont("times", "bold");
     doc.setFontSize(14); 
     doc.setTextColor(0, 0, 0);
-    const addressLines = doc.splitTextToSize(context?.address || "Standort verifiziert", contentWidth - 80);
+    
+    // Use the explicitly parsed address or fallback
+    const addr = context?.address || "Standort verifiziert";
+    const addressLines = doc.splitTextToSize(addr, contentWidth - 80);
     doc.text(addressLines[0], margin + 8, yPos + 22);
     
     // Coords Box (Simulate the grey tag look)
@@ -116,6 +119,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ location, context, onC
     doc.setFont("courier", "bold");
     doc.setFontSize(9);
     doc.setTextColor(80, 80, 80);
+    // STRICT COORDINATE FORMAT xx.xxxxxx
     doc.text(`LAT: ${location.lat.toFixed(6)} | LNG: ${location.lng.toFixed(6)}`, margin + 10, coordY + 5);
 
     // 112 / 144 Buttons (Visual)
@@ -299,7 +303,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ location, context, onC
       
       const shareData = {
         title: 'LUMAR Safety Sheet',
-        text: `LUMAR Notfall Info. Standort: ${location.lat}, ${location.lng}.`,
+        text: `LUMAR Notfall Info. Standort: ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}.`,
         files: [file]
       };
 
