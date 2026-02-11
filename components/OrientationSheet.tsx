@@ -18,7 +18,7 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
   const [showShare, setShowShare] = useState(false);
   const t = translations[language];
   
-  const staticMapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${location.lng - 0.001},${location.lat - 0.001},${location.lng + 0.001},${location.lat + 0.001}&layer=mapnik&marker=${location.lat},${location.lng}`;
+  const staticMapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${location.lng - 0.005},${location.lat - 0.005},${location.lng + 0.005},${location.lat + 0.005}&layer=mapnik&marker=${location.lat},${location.lng}`;
 
   const accuracy = location.accuracy || 0;
   const isAccurate = accuracy < 20; 
@@ -83,7 +83,7 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
                     <a href="tel:112" className="flex-1 flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-3 rounded hover:bg-red-700 transition shadow-lg font-bold text-2xl active:scale-95 transform min-w-[120px]">
                         <Phone size={24} fill="currentColor" /> 112
                     </a>
-                    <a href="tel:144" className="flex-1 flex items-center justify-center gap-2 bg-white text-red-600 border-2 border-red-600 px-4 py-3 rounded hover:bg-red-50 transition shadow-lg font-bold text-2xl active:scale-95 transform min-w-[120px]">
+                    <a href="tel:144" className="flex-1 flex items-center justify-center gap-2 bg-white text-red-600 border-2 border-red-600 px-4 py-3 rounded hover:bg-red-700 transition shadow-lg font-bold text-2xl active:scale-95 transform min-w-[120px]">
                         <Phone size={24} /> 144
                     </a>
                 </div>
@@ -114,6 +114,9 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
                   src={staticMapUrl}
                   title="Karte"
                   className="w-full h-full absolute inset-0"
+                  onError={(e) => {
+                    (e.target as any).style.display = 'none';
+                  }}
                 ></iframe>
                 <div className="absolute bottom-4 left-4 right-4">
                     <a 
@@ -182,8 +185,8 @@ export const OrientationSheet: React.FC<OrientationSheetProps> = ({ location, co
                            </div>
                         </div>
                     )}
-                    <p className="font-serif text-gray-700 leading-relaxed text-lg pl-1">
-                        {context?.description || "Keine Beschreibung verfügbar."}
+                    <p className="font-serif text-gray-700 leading-relaxed text-lg pl-1 whitespace-pre-line">
+                        {context?.description || (language === 'de' ? "Standortdaten konnten nicht geladen werden." : "Location data could not be loaded.")}
                     </p>
                 </div>
               </div>
