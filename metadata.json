@@ -1,6 +1,6 @@
 {
-  "name": "LUMAR Safety Locator",
-  "description": "Worker safety orientation tool providing immediate location context, rescue chain details, and emergency contacts based on LUMAR brand guidelines.",
+  "name": "LUMAR Safety Locator_funktionstüchtig",
+  "description": "Fertig. Karte auf PDF aber noch keine Adressen auf PDF",
   "requestFramePermissions": [
     "geolocation"
   ]

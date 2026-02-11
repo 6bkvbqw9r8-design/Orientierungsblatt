@@ -12,11 +12,24 @@ export interface LocationContext {
   mapUrl?: string;
 }
 
+export interface ExtractedAddress {
+  street: string | null;
+  houseNumber: string | null;
+  postalCode: string | null;
+  city: string | null;
+  country: string | null;
+  sourceText: string | null;
+  confidence: 'high' | 'medium' | 'low';
+  notes: string | null;
+}
+
 export enum AppState {
   LANGUAGE_SELECTION = 'LANGUAGE_SELECTION',
   IDLE = 'IDLE',
   LOCATING = 'LOCATING',
   ANALYZING = 'ANALYZING',
+  EXTRACTION = 'EXTRACTION',
+  EXTRACTING = 'EXTRACTING',
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
 }
