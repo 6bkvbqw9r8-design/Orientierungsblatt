@@ -183,7 +183,7 @@ export default function App() {
 
               <div className="flex items-center gap-4 py-2">
                 <div className="h-px bg-gray-300 flex-grow"></div>
-                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">{language === 'de' ? 'Oder' : 'Or'}</span>
+                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">{t.manualAddressBtn ? (language === 'de' ? 'Oder' : 'Or') : (language === 'de' ? 'Oder' : 'Or')}</span>
                 <div className="h-px bg-gray-300 flex-grow"></div>
               </div>
 
@@ -193,7 +193,7 @@ export default function App() {
                 className="w-full"
               >
                 <FileSearch size={20} />
-                {language === 'de' ? 'Adresse in der Nähe eingeben' : 'Please enter a nearby address'}
+                {t.manualAddressBtn}
               </Button>
             </div>
           </div>

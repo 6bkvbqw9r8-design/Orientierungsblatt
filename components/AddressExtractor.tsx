@@ -47,12 +47,10 @@ export const AddressExtractor: React.FC<AddressExtractorProps> = ({ language, on
           </button>
 
           <h2 className="font-serif text-3xl text-lumar-dark mb-2">
-            {language === 'de' ? 'Adresse eingeben' : 'Enter Address'}
+            {t.extractionTitle}
           </h2>
           <p className="font-sans text-gray-500 mb-8 text-sm leading-relaxed">
-            {language === 'de' 
-              ? 'Geben Sie eine Adresse in der Nähe oder Text aus einem Dokument ein. Die KI findet den Einsatzort für Sie.' 
-              : 'Please enter a nearby address or paste text from a document. The AI will find the site location for you.'}
+            {t.extractionSubtitle}
           </p>
 
           <div className="space-y-6">
@@ -60,7 +58,7 @@ export const AddressExtractor: React.FC<AddressExtractorProps> = ({ language, on
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={language === 'de' ? "Adresse hier eingeben..." : "Enter address here..."}
+                placeholder={t.extractionPlaceholder}
                 className="w-full h-48 p-4 bg-gray-50 border border-gray-200 focus:border-lumar-green focus:ring-1 focus:ring-lumar-green outline-none font-sans text-base resize-none rounded-none"
               />
               <FileText className="absolute bottom-4 right-4 text-gray-300 pointer-events-none" size={24} />
@@ -72,7 +70,7 @@ export const AddressExtractor: React.FC<AddressExtractorProps> = ({ language, on
               className="w-full"
             >
               <Search size={20} />
-              {language === 'de' ? 'Daten analysieren' : 'Analyze Data'}
+              {t.analyzeBtn}
             </Button>
 
             {result && (
@@ -80,7 +78,7 @@ export const AddressExtractor: React.FC<AddressExtractorProps> = ({ language, on
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="font-serif text-xl text-lumar-dark flex items-center gap-2">
                     {result.confidence === 'high' ? <CheckCircle className="text-lumar-green" size={20} /> : <AlertCircle className="text-amber-500" size={20} />}
-                    {language === 'de' ? 'Ergebnis' : 'Result'}
+                    {t.resultTitle}
                   </h3>
                   <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded ${result.confidence === 'high' ? 'bg-lumar-green text-white' : 'bg-gray-200 text-gray-600'}`}>
                     Konfidenz: {result.confidence}
@@ -90,7 +88,7 @@ export const AddressExtractor: React.FC<AddressExtractorProps> = ({ language, on
                 {formattedAddress ? (
                   <div className="space-y-4">
                     <div className="bg-white p-4 border border-gray-100 shadow-sm">
-                      <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Verifizierte Adresse</p>
+                      <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">{t.verifiedAddressLabel}</p>
                       <p className="font-serif text-xl text-lumar-dark">{formattedAddress}</p>
                     </div>
                     
@@ -103,12 +101,12 @@ export const AddressExtractor: React.FC<AddressExtractorProps> = ({ language, on
                       className="w-full bg-lumar-dark hover:bg-black"
                     >
                       <MapPin size={20} />
-                      {language === 'de' ? 'Als Standort verwenden' : 'Use as Location'}
+                      {t.useAsLocationBtn}
                     </Button>
                   </div>
                 ) : (
                   <p className="text-sm text-gray-600">
-                    {language === 'de' ? 'Es konnte keine eindeutige Adresse gefunden werden.' : 'No clear address could be found.'}
+                    {t.noAddressFound}
                   </p>
                 )}
               </div>

@@ -1,3 +1,4 @@
+
 import { Language, EmergencyStep } from '../types';
 
 export const PROMPT_LANGUAGES: Record<Language, string> = {
@@ -29,6 +30,15 @@ interface TranslationContent {
   autoLocationLabel: string;
   addressLabel: string;
   rescueChainTitle: string;
+  manualAddressBtn: string;
+  extractionTitle: string;
+  extractionSubtitle: string;
+  extractionPlaceholder: string;
+  analyzeBtn: string;
+  resultTitle: string;
+  verifiedAddressLabel: string;
+  useAsLocationBtn: string;
+  noAddressFound: string;
   steps: EmergencyStep[];
 }
 
@@ -103,6 +113,15 @@ export const translations: Record<Language, TranslationContent> = {
     autoLocationLabel: "Automatische Ortung",
     addressLabel: "Ihre Adresse (für Rettungskräfte)",
     rescueChainTitle: "Standardisierte Rettungskette",
+    manualAddressBtn: "Adresse in der Nähe eingeben",
+    extractionTitle: "Adresse eingeben",
+    extractionSubtitle: "Geben Sie eine Adresse in der Nähe oder Text aus einem Dokument ein. Die KI findet den Einsatzort für Sie.",
+    extractionPlaceholder: "Adresse hier eingeben...",
+    analyzeBtn: "Daten analysieren",
+    resultTitle: "Ergebnis",
+    verifiedAddressLabel: "Verifizierte Adresse",
+    useAsLocationBtn: "Als Standort verwenden",
+    noAddressFound: "Es konnte keine eindeutige Adresse gefunden werden.",
     steps: mapSteps('de')
   },
   en: {
@@ -125,6 +144,15 @@ export const translations: Record<Language, TranslationContent> = {
     autoLocationLabel: "Automatic Location",
     addressLabel: "Your Address (for rescue services)",
     rescueChainTitle: "Standardized Rescue Chain",
+    manualAddressBtn: "Please enter a nearby address",
+    extractionTitle: "Enter Address",
+    extractionSubtitle: "Please enter a nearby address or paste text from a document. The AI will find the site location for you.",
+    extractionPlaceholder: "Enter address here...",
+    analyzeBtn: "Analyze Data",
+    resultTitle: "Result",
+    verifiedAddressLabel: "Verified Address",
+    useAsLocationBtn: "Use as Location",
+    noAddressFound: "No clear address could be found.",
     steps: mapSteps('en')
   },
   ro: {
@@ -147,6 +175,15 @@ export const translations: Record<Language, TranslationContent> = {
     autoLocationLabel: "Localizare Automată",
     addressLabel: "Adresa Dvs. (pentru salvare)",
     rescueChainTitle: "Lanțul de Salvare Standardizat",
+    manualAddressBtn: "Vă rugăm să introduceți o adresă din apropiere",
+    extractionTitle: "Introduceți adresa",
+    extractionSubtitle: "Vă rugăm să introduceți o adresă din apropiere sau să inserați text dintr-un document. AI va găsi locația șantierului pentru dvs.",
+    extractionPlaceholder: "Introduceți adresa aici...",
+    analyzeBtn: "Analizează datele",
+    resultTitle: "Rezultat",
+    verifiedAddressLabel: "Adresă verificată",
+    useAsLocationBtn: "Utilizează ca locație",
+    noAddressFound: "Nu a putut fi găsită nicio adresă clară.",
     steps: mapSteps('ro')
   },
   hr: {
@@ -169,6 +206,15 @@ export const translations: Record<Language, TranslationContent> = {
     autoLocationLabel: "Automatsko lociranje",
     addressLabel: "Vaša adresa (za hitne službe)",
     rescueChainTitle: "Standardizirani lanac spašavanja",
+    manualAddressBtn: "Unesite obližnju adresu",
+    extractionTitle: "Unesite adresu",
+    extractionSubtitle: "Unesite obližnju adresu ili zalijepite tekst iz dokumenta. AI će pronaći lokaciju mjesta za vas.",
+    extractionPlaceholder: "Unesite adresu ovdje...",
+    analyzeBtn: "Analiziraj podatke",
+    resultTitle: "Rezultat",
+    verifiedAddressLabel: "Provjerena adresa",
+    useAsLocationBtn: "Koristi kao lokaciju",
+    noAddressFound: "Nije pronađena jasna adresa.",
     steps: mapSteps('hr')
   },
   sr: {
@@ -191,6 +237,15 @@ export const translations: Record<Language, TranslationContent> = {
     autoLocationLabel: "Automatsko lociranje",
     addressLabel: "Vaša adresa (za hitne službe)",
     rescueChainTitle: "Standardizovani lanac spasavanja",
+    manualAddressBtn: "Unesite obližnju adresu",
+    extractionTitle: "Unesite adresu",
+    extractionSubtitle: "Unesite obližnju adresu ili zalepite tekst iz dokumenta. AI će pronaći lokaciju za vas.",
+    extractionPlaceholder: "Unesite adresu ovde...",
+    analyzeBtn: "Analiziraj podatke",
+    resultTitle: "Rezultat",
+    verifiedAddressLabel: "Verifikovana adresa",
+    useAsLocationBtn: "Koristi kao lokaciju",
+    noAddressFound: "Nije pronađena jasna adresa.",
     steps: mapSteps('sr')
   },
   bs: {
@@ -213,6 +268,15 @@ export const translations: Record<Language, TranslationContent> = {
     autoLocationLabel: "Automatsko lociranje",
     addressLabel: "Vaša adresa (za hitne službe)",
     rescueChainTitle: "Standardizirani lanac spašavanja",
+    manualAddressBtn: "Unesite obližnju adresu",
+    extractionTitle: "Unesite adresu",
+    extractionSubtitle: "Unesite obližnju adresu ili zalijepite tekst iz dokumenta. AI će pronaći lokaciju mjesta za vas.",
+    extractionPlaceholder: "Unesite adresu ovdje...",
+    analyzeBtn: "Analiziraj podatke",
+    resultTitle: "Rezultat",
+    verifiedAddressLabel: "Provjerena adresa",
+    useAsLocationBtn: "Koristi kao lokaciju",
+    noAddressFound: "Nije pronađena jasna adresa.",
     steps: mapSteps('bs')
   }
 };
