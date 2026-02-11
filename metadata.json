@@ -1,6 +1,6 @@
 {
-  "name": "LUMAR Safety Locator_funktionstüchtig",
-  "description": "Fertig. Karte auf PDF aber noch keine Adressen auf PDF",
+  "name": "Orientierungsblatt Fertig",
+  "description": "Fertig und Funktionsfähig",
   "requestFramePermissions": [
     "geolocation"
   ]
